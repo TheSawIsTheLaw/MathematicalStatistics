@@ -32,15 +32,38 @@ function main()
     m = floor(log2(length(X))) + 2;
     fprintf("\nг)Группировка значений выборки в m = [log2 n] + 2 интервала: m = %f", m);
     
-    % Разбиение выборки на интервалы от min до max
-    [count, edges] = histcounts(X, m, 'BinLimits', [min(X), max(X)]);
+    % Разбиение выборки на интервалы от min до max, с помощью BinLimits
+    % объединяем только те значения, которые находятся в интервале от мин
+    % до макс
+    [counts, edges] = histcounts(X, m, 'BinLimits', [min(X), max(X)]);
     
-    for i = 1: length(count)
-        fprintf("[%f : %f] - %d\n", edges(i), edges(i + 1), count(i));
+    for i = 1: length(counts)
+        fprintf("[%f : %f] - %d\n", edges(i), edges(i + 1), counts(i));
     end
     
-    
-    
     %д) 
+    hist = histogram();
+    hist.BinEdges = edges;
+    hist.BinCounts = counts / length(X) / ((max(X) - min(X)) / m);
+    
+    hold on; % Продолжаем работать с той же системой
+    
+    delta = R/m;
+    sigma = sqrt(s2);
+    Xn = min(X):delta/20:max(X);
+    Y = normpdf(Xn, mu, sigma);
+    plot(Xn, Y, 'blue');
     
     %е)
+    figure;
+    [yy, xx] = ecdf(X);
+    stairs(xx, yy);
+    
+    hold on;
+    
+    delta = R/m;
+    Xn = min(X):delta/20:max(X);
+    Y = 1/2 * (1 + erf((Xn - mu) / sqrt(2*s2))); 
+    plot(Xn, Y, 'black');
+    
+end
