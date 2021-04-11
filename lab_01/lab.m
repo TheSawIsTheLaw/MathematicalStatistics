@@ -13,22 +13,34 @@ function main()
        -4.05,-5.76,-5.86,-6.45,-4.81,-5.68,-7.48,-3.97,-5.16,-3.48];
     
     %1)
-    %а)
+    %а) Максимальное и минимальное значения
     Mmax = max(X);
     Mmin = min(X);
     fprintf("\nа) Mmax (максимальное значение) = %f; Mmin (минимальное значенение) = %f", Mmax, Mmin);
     
-    %б)
+    %б) Размах
     R = Mmax - Mmin;
     fprintf("\nб) R (размах) = %f", R);
     
-    %в)
+    %в) Оценки
     mu = sum(X) / length(X);
     s2 = sum((X - mean(X)).^2) / (length(X) - 1);
     fprintf("\nв)mu (оценка математического ожидания) = %f; s^2 (оценка дисперсии) = %f", mu, s2);
     
-    %г)
+    %г) Группировка значений выборки
+    % Нахождение количества интервалов
+    m = floor(log2(length(X))) + 2;
+    fprintf("\nг)Группировка значений выборки в m = [log2 n] + 2 интервала: m = %f", m);
     
-    %д)
+    % Разбиение выборки на интервалы от min до max
+    [count, edges] = histcounts(X, m, 'BinLimits', [min(X), max(X)]);
+    
+    for i = 1: length(count)
+        fprintf("[%f : %f] - %d\n", edges(i), edges(i + 1), count(i));
+    end
+    
+    
+    
+    %д) 
     
     %е)
