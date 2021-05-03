@@ -364,8 +364,7 @@ function main()
     fprintf("\nг)Группировка значений выборки в m = [log2 n] + 2 интервала: m = %f\n", m);
     
     % Разбиение выборки на интервалы от min до max, с помощью BinLimits
-    % объединяем только те значения, которые находятся в интервале от мин
-    % до макс
+    % объединяем только те значения, которые находятся в интервале от мин до макс
     [counts, edges] = histcounts(X, m, 'BinLimits', [min(X), max(X)]);
     
     for i = 1: length(counts)
@@ -405,15 +404,15 @@ end
 \section{Результаты расчетов для выборки варианта 21} 
 
 \begin{enumerate}
-\item Максимальное значение $M_{max} = $,
-\item Минимальное значение выборки $M_{min} = $,
-\item Размах выборки $R = $,
-\item Оценки: $\hat \mu = , S^2 = $,
-\item Группировка значений выборки в $m = [log_2 n] + 2$ интервала предоставлена на рисунке \ref{img:output}.
+\item Максимальное значение $M_{max} = -12.91$,
+\item Минимальное значение выборки $M_{min} = -17.29$,
+\item Размах выборки $R = 4.38$,
+\item Оценки: $\hat \mu = -15.220917, S^2 = 0.968029$,
+\item Группировка значений выборки в $m = [log_2 n] + 2 = 8$ интервала предоставлена на рисунке \ref{img:output}.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.28]{inc/img/output.png}
+\includegraphics[scale=1]{inc/img/output.png}
 \captionsetup{justification=centering}
 	\caption{Поток вывода программы.}
 	\label{img:output}	
@@ -424,7 +423,7 @@ end
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.28]{inc/img/outputGraph.png}
+\includegraphics[scale=1]{inc/img/outputGraph.png}
 \captionsetup{justification=centering}
 	\caption{Гистограмма и график функции плотности распределения вероятностей нормальной случайной величины с математическим ожиданием $\hat \mu$ и дисперсией $S^2$.}
 	\label{img:outputGraph}	
@@ -435,7 +434,7 @@ end
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.28]{inc/img/outputGraph2.png}
+\includegraphics[scale=1]{inc/img/outputGraph2.png}
 \captionsetup{justification=centering}
 	\caption{График эмпирической функции распределения и функции распределения нормальной случайной величины с математическим ожиданием $\hat \mu$ и дисперсией $S^2$.}
 	\label{img:outputGraph2}	

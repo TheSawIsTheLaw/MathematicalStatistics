@@ -247,11 +247,11 @@ $$P\{\underline{\theta}(\vec X)< \theta< \overline{\theta}(\vec X)\}=\gamma$$
 Формулы для вычисления границ $\gamma$-доверительного интервала для математического ожидания:
 
 $$
-\underline\mu(\vec X_n)=\overline X - \frac{S(\vec X)t_{\frac{1+\gamma}{2}}}{\sqrt{n}}
+\underline\mu(\vec X_n)=\overline X - \frac{S(\vec X)t^{St(n-1)}_{\frac{1+\gamma}{2}}}{\sqrt{n}}
 $$
 
 $$
-\overline\mu(\vec X_n)=\overline X + \frac{S(\vec X)t_{\frac{1+\gamma}{2}}}{\sqrt{n}}
+\overline\mu(\vec X_n)=\overline X + \frac{S(\vec X)t^{St(n-1)}_{\frac{1+\gamma}{2}}}{\sqrt{n}}
 $$
 
 $\overline X$ -- точечная оценка математического ожидания;
@@ -262,16 +262,16 @@ $n$ -- объем выборки;
 
 $\gamma$ -- уровень доверия;
 
-$t_{\frac{1+\gamma}{2}}$ -- квантили соответствующих уровней распределения Стьюдента с n - 1 степенями свободы.
+$t^{St(n-1)}_{\frac{1+\gamma}{2}}$ -- квантили соответствующих уровней распределения Стьюдента с n - 1 степенями свободы.
 
 Формулы для вычисления границ $\gamma$-доверительного интервала для дисперсии:
 
 $$
-\underline\sigma(\vec X_n)= \frac{(n-1)S^2(\vec X)}{h_{\frac{1+\gamma}{2}}}
+\underline\sigma(\vec X_n)= \frac{(n-1)S^2(\vec X)}{t^{\chi^2(n-1)}_{\frac{1+\gamma}{2}}}
 $$
 
 $$
-\overline\sigma(\vec X_n)= \frac{(n-1)S^2(\vec X)}{h_{\frac{1-\gamma}{2}}}
+\overline\sigma(\vec X_n)= \frac{(n-1)S^2(\vec X)}{t^{\chi^2(n-1)}_{\frac{1-\gamma}{2}}}
 $$
 
 $S^2(\vec X)$ -- точечная оценка дисперсии;
@@ -280,10 +280,9 @@ $n$ -- объем выборки;
 
 $\gamma$ -- уровень доверия;
 
-$h_{\frac{1+\gamma}{2}}$ -- квантили соответствующих уровней распределения $\chi^2$ с n - 1 степенями свободы.
+$t^{\chi^2(n-1)}_{\frac{1+\gamma}{2}}$ -- квантили соответствующих уровней распределения $\chi^2(n-1)$ с n - 1 степенями свободы.
 
 \section{Текст программы}
-
 \hfill 
 \begin{lstlisting}[caption=Реализация]
 function main()
@@ -311,69 +310,68 @@ function main()
        -13.64,-14.00,-17.29,-14.51,-16.18,...
        -15.70,-15.07,-14.28,-14.55,-13.85,...
        -15.36,-15.74,-14.61,-16.32,-15.34];
-       
+   
     % Уровень доверия
     gamma = 0.9;
     % Объем выборки 
     n = length(X);
-    % Точечная оценка матожидания
+    % Точечная оценка мат. ожидания
     mu = mean(X);
     % Точечная оценка дисперсии
     s2 = var(X);
     
-    % Нижняя граница доверительного интервала для матожидания
-    muLow = findMuLow(n, mu, s2, gamma);
-    % Верхняя граница доверительного интервала для матожидания
-    muHigh = findMuHigh(n, mu, s2, gamma);
+    % Нижняя граница доверительного интервала для мат. ожидания
+    muBot = findMuBot(n, mu, s2, gamma);
+    % Верхняя граница доверительного интервала для мат. ожидания
+    muTop = findMuTop(n, mu, s2, gamma);
     % Нижняя граница доверительного интервала для дисперсии
-    s2Low = findS2Low(n, s2, gamma);
+    s2Bot = findS2Bot(n, s2, gamma);
     % Верхняя граница доверительного интервала для дисперсии
-    s2High = findS2High(n, s2, gamma);
+    s2Top = findS2Top(n, s2, gamma);
     
     % Вывод полученных ранее значений
-    fprintf('mu = %.3f\n', mu);
-    fprintf('S2 = %.3f\n', s2);
-    fprintf('muLow = %.3f\n', muLow);
-    fprintf('muHigh = %.3f\n', muHigh);
-    fprintf('s2Low = %.3f\n', s2Low);
-    fprintf('s2High = %.3f\n', s2High);
+    fprintf('mu (Точечная оценка математического ожидания) = %.3f\n', mu);
+    fprintf('S2 (Точечная оценка дисперсии) = %.3f\n', s2);
+    fprintf('muBot (нижняя граница доверительного интервала для математического ожидания) = %.3f\n', muBot);
+    fprintf('muTop (верхняя граница -//-) = %.3f\n', muTop);
+    fprintf('s2Bot (нижняя граница доверительного интервала для дисперсии) = %.3f\n', s2Bot);
+    fprintf('s2Top (верхняя граница -//-) = %.3f\n', s2Top);
     
     % Создание массивов точченых оценок
     muArray = zeros(1, n);
     s2Array = zeros(1, n);
     % Создание массивов границ доверительных интервалов
-    muLowArray = zeros(1, n);
-    muHighArray = zeros(1, n);
-    s2LowArray = zeros(1, n);
-    s2HighArray = zeros(1, n);
+    muBotArray = zeros(1, n);
+    muTopArray = zeros(1, n);
+    s2BotArray = zeros(1, n);
+    s2TopArray = zeros(1, n);
     
-    % Цикл от 1 до n
     for i = 1 : n
         mu = mean(X(1:i));
         s2 = var(X(1:i));
-        % Точечная оценка матожидания
+        % Точечная оценка математического ожидания
         muArray(i) = mu;
         % Точечная оценка дисперсии
         s2Array(i) = s2;
-        % Нижняя граница доверительного интервала для матожидания
-        muLowArray(i) = findMuLow(i, mu, s2, gamma);
-        % Верхняя граница доверительного интервала для матожидания
-        muHighArray(i) = findMuHigh(i, mu, s2, gamma);
+        % Нижняя граница доверительного интервала для математического ожидания
+        muBotArray(i) = findMuBot(i, mu, s2, gamma);
+        % Верхняя граница доверительного интервала для математического ожидания
+        muTopArray(i) = findMuTop(i, mu, s2, gamma);
         % Нижняя граница доверительного интервала для дисперсии
-        s2LowArray(i) = findS2Low(i, s2, gamma);
+        s2BotArray(i) = findS2Bot(i, s2, gamma);
         % Верхняя граница доверительного интервала для дисперсии
-        s2HighArray(i) = findS2High(i, s2, gamma);
+        s2TopArray(i) = findS2Top(i, s2, gamma);
     end
     
     % Построение графиков
-    plot(1 : n, [(zeros(1, n) + mu)', muArray', muLowArray', muHighArray']);
+    plot(1 : n, [(zeros(1, n) + mu)', muArray', muBotArray', muTopArray']);
     xlabel('n');
     ylabel('y');
     legend('$\hat \mu(\vec x_N)$', '$\hat \mu(\vec x_n)$', ...
         '$\underline{\mu}(\vec x_n)$', '$\overline{\mu}(\vec x_n)$', ...
         'Interpreter', 'latex', 'FontSize', 18);
     figure;
-    plot(1 : n, [(zeros(1, n) + s2)', s2Array', s2LowArray', s2HighArray']);
+    plot(1 : n, [(zeros(1, n) + s2)', s2Array', s2BotArray', s2TopArray']);
     xlabel('n');
     ylabel('z');
     legend('$\hat S^2(\vec x_N)$', '$\hat S^2(\vec x_n)$', ...
@@ -381,25 +379,26 @@ function main()
         'Interpreter', 'latex', 'FontSize', 18);
 end
 
-% Функция поиска нижней границы доверительного интервала для матожидания
-function muLow = findMuLow(n, mu, s2, gamma)
-    muLow = mu - sqrt(s2) * tinv((1 + gamma) / 2, n - 1) / sqrt(n);
+% Функция поиска нижней границы доверительного интервала для математического ожидания
+function muBot = findMuBot(n, mu, s2, gamma)
+    muBot = mu - sqrt(s2) * tinv((1 + gamma) / 2, n - 1) / sqrt(n);
 end
 
-% Функция поиска верхней границы доверительного интервала для матожидания
-function muHigh = findMuHigh(n, mu, s2, gamma)
-    muHigh = mu + sqrt(s2) * tinv((1 + gamma) / 2, n - 1) / sqrt(n);
+% Функция поиска верхней границы доверительного интервала для математического ожидания
+function muTop = findMuTop(n, mu, s2, gamma)
+    muTop = mu + sqrt(s2) * tinv((1 + gamma) / 2, n - 1) / sqrt(n);
 end
 
 % Функция поиска нижней границы доверительного интервала для дисперсии
-function s2Low = findS2Low(n, s2, gamma)
-    s2Low = ((n - 1) * s2) / chi2inv((1 + gamma) / 2, n - 1);
+function s2Bot = findS2Bot(n, s2, gamma)
+    s2Bot = ((n - 1) * s2) / chi2inv((1 + gamma) / 2, n - 1);
 end
 
 % Функция поиска верхней границы доверительного интервала для дисперсии
-function s2High = findS2High(n, s2, gamma)
-    s2High = ((n - 1) * s2) / chi2inv((1 - gamma) / 2, n - 1);
+function s2Top = findS2Top(n, s2, gamma)
+    s2Top = ((n - 1) * s2) / chi2inv((1 - gamma) / 2, n - 1);
 end
+
 \end{lstlisting}
 
 \section{Результаты расчетов и графики для выборки варианта 21} 
@@ -414,7 +413,7 @@ $\hat \mu (\vec x_n) = $, $ S^2 (\vec x_n) = $
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.28]{inc/img/output.png}
+\includegraphics[scale=1]{inc/img/output.png}
 \captionsetup{justification=centering}
 	\caption{Поток вывода программы.}
 	\label{img:output}	
@@ -425,7 +424,7 @@ $\hat \mu (\vec x_n) = $, $ S^2 (\vec x_n) = $
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.28]{inc/img/outputGraph.png}
+\includegraphics[scale=1]{inc/img/outputGraph.png}
 \captionsetup{justification=centering}
 	\caption{Прямая $y=\hat \mu (\vec x_N)$ и графики функций $y=\hat \mu (\vec x_n), y= \underline \mu (\vec x_n), y =\overline \mu (\vec x_n)$ как функций объема n выборки, где n изменяется от 1 до N.}
 	\label{img:outputGraph}	
@@ -438,10 +437,28 @@ $\hat \mu (\vec x_n) = $, $ S^2 (\vec x_n) = $
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.28]{inc/img/outputGraph2.png}
+\includegraphics[scale=1]{inc/img/outputGraph2.png}
 \captionsetup{justification=centering}
-	\caption{Прямуя $z=\hat S^2 (\vec x_N)$ и графики функций $z= S^2 (\vec x_n), z= \underline \sigma^2 (\vec x_n), z =\overline \sigma^2 (\vec x_n)$ как функций объема n выборки, где n изменяется от 1 до N.}
+	\caption{Прямая $z=\hat S^2 (\vec x_N)$ и графики функций $z= S^2 (\vec x_n), z= \underline \sigma^2 (\vec x_n), z =\overline \sigma^2 (\vec x_n)$ как функций объема n выборки, где n изменяется от 1 до N.}
 	\label{img:outputGraph2}	
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=1]{inc/img/outputGraph3.png}
+\captionsetup{justification=centering}
+	\caption{Прямая $z=\hat S^2 (\vec x_N)$ и графики функций $z= S^2 (\vec x_n), z= \underline \sigma^2 (\vec x_n), z =\overline \sigma^2 (\vec x_n)$ как функций объема n выборки, где n изменяется от 1 до N.}
+	\label{img:outputGraph3}	
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=1]{inc/img/outputGraph4.png}
+\captionsetup{justification=centering}
+	\caption{Прямая $z=\hat S^2 (\vec x_N)$ и графики функций $z= S^2 (\vec x_n), z= \underline \sigma^2 (\vec x_n), z =\overline \sigma^2 (\vec x_n)$ как функций объема n выборки, где n изменяется от 1 до N.}
+	\label{img:outputGraph4}	
 \end{center}
 \end{figure}
 
