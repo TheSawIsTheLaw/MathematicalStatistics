@@ -16,38 +16,37 @@ function main()
     gamma = 0.9;
     % Объем выборки 
     n = length(X);
-    % Точечная оценка матожидания
+    % Точечная оценка мат. ожидания
     mu = mean(X);
     % Точечная оценка дисперсии
     s2 = var(X);
     
-    % Нижняя граница доверительного интервала для матожидания
-    muLow = findMuLow(n, mu, s2, gamma);
-    % Верхняя граница доверительного интервала для матожидания
-    muHigh = findMuHigh(n, mu, s2, gamma);
+    % Нижняя граница доверительного интервала для мат. ожидания
+    muBot = findMuBot(n, mu, s2, gamma);
+    % Верхняя граница доверительного интервала для мат. ожидания
+    muTop = findMuTop(n, mu, s2, gamma);
     % Нижняя граница доверительного интервала для дисперсии
-    s2Low = findS2Low(n, s2, gamma);
+    s2Bot = findS2Bot(n, s2, gamma);
     % Верхняя граница доверительного интервала для дисперсии
-    s2High = findS2High(n, s2, gamma);
+    s2Top = findS2Top(n, s2, gamma);
     
     % Вывод полученных ранее значений
-    fprintf('mu = %.3f\n', mu);
-    fprintf('S2 = %.3f\n', s2);
-    fprintf('muLow = %.3f\n', muLow);
-    fprintf('muHigh = %.3f\n', muHigh);
-    fprintf('s2Low = %.3f\n', s2Low);
-    fprintf('s2High = %.3f\n', s2High);
+    fprintf('mu (Точечная оценка математического ожидания) = %.3f\n', mu);
+    fprintf('S2 (Точечная оценка дисперсии) = %.3f\n', s2);
+    fprintf('muBot (нижняя граница доверительного интервала для математического ожидания) = %.3f\n', muBot);
+    fprintf('muTop (верхняя граница -//-) = %.3f\n', muTop);
+    fprintf('s2Bot (нижняя граница доверительного интервала для дисперсии) = %.3f\n', s2Bot);
+    fprintf('s2Top (верхняя граница -//-) = %.3f\n', s2Top);
     
     % Создание массивов точченых оценок
     muArray = zeros(1, n);
     s2Array = zeros(1, n);
     % Создание массивов границ доверительных интервалов
-    muLowArray = zeros(1, n);
-    muHighArray = zeros(1, n);
-    s2LowArray = zeros(1, n);
-    s2HighArray = zeros(1, n);
+    muBotArray = zeros(1, n);
+    muTopArray = zeros(1, n);
+    s2BotArray = zeros(1, n);
+    s2TopArray = zeros(1, n);
     
-    % Цикл от 1 до n
     for i = 1 : n
         mu = mean(X(1:i));
         s2 = var(X(1:i));
@@ -56,24 +55,24 @@ function main()
         % Точечная оценка дисперсии
         s2Array(i) = s2;
         % Нижняя граница доверительного интервала для матожидания
-        muLowArray(i) = findMuLow(i, mu, s2, gamma);
+        muBotArray(i) = findMuBot(i, mu, s2, gamma);
         % Верхняя граница доверительного интервала для матожидания
-        muHighArray(i) = findMuHigh(i, mu, s2, gamma);
+        muTopArray(i) = findMuTop(i, mu, s2, gamma);
         % Нижняя граница доверительного интервала для дисперсии
-        s2LowArray(i) = findS2Low(i, s2, gamma);
+        s2BotArray(i) = findS2Bot(i, s2, gamma);
         % Верхняя граница доверительного интервала для дисперсии
-        s2HighArray(i) = findS2High(i, s2, gamma);
+        s2TopArray(i) = findS2Top(i, s2, gamma);
     end
     
     % Построение графиков
-    plot(1 : n, [(zeros(1, n) + mu)', muArray', muLowArray', muHighArray']);
+    plot(1 : n, [(zeros(1, n) + mu)', muArray', muBotArray', muTopArray']);
     xlabel('n');
     ylabel('y');
     legend('$\hat \mu(\vec x_N)$', '$\hat \mu(\vec x_n)$', ...
         '$\underline{\mu}(\vec x_n)$', '$\overline{\mu}(\vec x_n)$', ...
         'Interpreter', 'latex', 'FontSize', 18);
     figure;
-    plot(1 : n, [(zeros(1, n) + s2)', s2Array', s2LowArray', s2HighArray']);
+    plot(1 : n, [(zeros(1, n) + s2)', s2Array', s2BotArray', s2TopArray']);
     xlabel('n');
     ylabel('z');
     legend('$\hat S^2(\vec x_N)$', '$\hat S^2(\vec x_n)$', ...
@@ -82,21 +81,21 @@ function main()
 end
 
 % Функция поиска нижней границы доверительного интервала для матожидания
-function muLow = findMuLow(n, mu, s2, gamma)
-    muLow = mu - sqrt(s2) * tinv((1 + gamma) / 2, n - 1) / sqrt(n);
+function muBot = findMuBot(n, mu, s2, gamma)
+    muBot = mu - sqrt(s2) * tinv((1 + gamma) / 2, n - 1) / sqrt(n);
 end
 
 % Функция поиска верхней границы доверительного интервала для матожидания
-function muHigh = findMuHigh(n, mu, s2, gamma)
-    muHigh = mu + sqrt(s2) * tinv((1 + gamma) / 2, n - 1) / sqrt(n);
+function muTop = findMuTop(n, mu, s2, gamma)
+    muTop = mu + sqrt(s2) * tinv((1 + gamma) / 2, n - 1) / sqrt(n);
 end
 
 % Функция поиска нижней границы доверительного интервала для дисперсии
-function s2Low = findS2Low(n, s2, gamma)
-    s2Low = ((n - 1) * s2) / chi2inv((1 + gamma) / 2, n - 1);
+function s2Bot = findS2Bot(n, s2, gamma)
+    s2Bot = ((n - 1) * s2) / chi2inv((1 + gamma) / 2, n - 1);
 end
 
 % Функция поиска верхней границы доверительного интервала для дисперсии
-function s2High = findS2High(n, s2, gamma)
-    s2High = ((n - 1) * s2) / chi2inv((1 - gamma) / 2, n - 1);
+function s2Top = findS2Top(n, s2, gamma)
+    s2Top = ((n - 1) * s2) / chi2inv((1 - gamma) / 2, n - 1);
 end
