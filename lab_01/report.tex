@@ -1,0 +1,236 @@
+\documentclass[a4paper,oneside,12pt]{extreport}
+
+\usepackage{mmap}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+
+\renewcommand{\ttdefault}{PTMono-TLF}
+
+% Текст отчёта следует печатать, соблюдая следующие размеры полей:
+% левое — 30 мм, правое — 15 мм, верхнее и нижнее — 20 мм.
+\usepackage[left=20mm, right=15mm, top=15mm, bottom=15mm]{geometry}
+
+% \setlength{\parindent}{1.25cm} % Абзацный отступ
+
+\usepackage{setspace}
+% \onehalfspacing % Полуторный интервал
+
+\frenchspacing % Равномерные пробелы
+\usepackage{indentfirst} % Красная строка
+
+\usepackage{microtype}
+\sloppy
+
+\usepackage{titlesec}
+\titlespacing*{\chapter}{0pt}{-30pt}{8pt}
+\titlespacing*{\section}{\parindent}{*4}{*4}
+\titlespacing*{\subsection}{\parindent}{*4}{*4}
+\titleformat{\chapter}{\LARGE\bfseries}{\thechapter}{20pt}{\LARGE\bfseries}
+\titleformat{\section}{\Large\bfseries}{\thesection}{40pt}{\Large\bfseries}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+
+\usepackage[unicode,pdftex]{hyperref}
+\hypersetup{hidelinks}
+
+%% begin title
+\usepackage{wrapfig}
+
+\makeatletter
+	\def\vhrulefill#1{\leavevmode\leaders\hrule\@height#1\hfill \kern\z@}
+\makeatother
+%% end title
+
+%% begin code
+\usepackage{listings}
+\usepackage{listingsutf8}
+\usepackage{xcolor}
+
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+%% end code
+
+%% begin theorem
+\usepackage{amsthm}
+
+\makeatletter
+\newtheoremstyle{indented}
+	{}% measure of space to leave above the theorem
+	{}% measure of space to leave below the theorem
+	{}% name of font to use in the body of the theorem
+	{\parindent}% measure of space to indent
+	{\bfseries}% name of head font
+	{.}% punctuation between head and body
+	{ }% space after theorem head; " " = normal interword space
+	{}% header specification (empty for default)
+\makeatother
+
+\theoremstyle{indented}
+
+\newtheorem{definition}{Определение}[section]
+\newtheorem{remark}{Замечание}[section]
+%% end theorem
+
+
+\usepackage{amsmath, amsfonts, amssymb}
+
+\renewcommand\thesection{\arabic{section}}
+\renewcommand\thesubsection{\thesection.\arabic{subsection}}
+
+\begin{document}
+\paragraph{Цель работы:} построение гистограммы и эмпирической функции распределения.
+
+\paragraph{Содержание работы}
+
+\begin{enumerate}
+	\item Для выборки объёма $n$ из генеральной совокупности $X$ реализовать в виде программы на ЭВМ
+	\begin{itemize}
+		\item вычисление максимального значения $M_{\max}$ и минимального значения $M_{\min}$;
+		\item размаха $R$ выборки;
+		\item вычисление оценок $\hat\mu$ и $S^2$ математического ожидания $MX$ и дисперсии $DX$;
+		\item группировку значений выборки в $m = [\log_2 n] + 2$ интервала;
+		\item построение на одной координатной плоскости гистограммы и графика функции плотности распределения вероятностей нормальной случайной величины с математическим ожиданием $\hat{\mu}$ и дисперсией $S^2$;
+		\item построение на другой координатной плоскости графика эмпирической функции распределения и функции распределения нормальной случайной величины с математическим ожиданием $\hat{\mu}$ и дисперсией $S^2$.
+	\end{itemize}
+	\item Провести вычисления и построить графики для выборки из индивидуального варианта.
+\end{enumerate}
+
+\pagebreak
+\section{Формулы для вычисления величин}
+
+$$\vec x=(x_1, ..., x_n)$$
+
+\begin{enumerate}
+\item \textbf{Максимальное значение выборки}
+$$M_{\max} = \max\{x_1, .., x_n\}$$
+\item \textbf{Минимальное значение выборки}
+$$M_{\min} = \min\{x_1, .., x_n\}$$
+\item \textbf{Размах выборки}
+$$R = M_{\max} - M_{\min}$$
+\item \textbf{Выборочное среднее (математическое ожидание)}
+$$\hat \mu(\vec x) = \frac{1}{n} \sum_{i=1}^n x_i$$
+\item \textbf{Состоятельная оценка дисперсии}
+$$S^2 (\vec x) = \frac{1}{n-1} \sum_{i=1}^n (x_i - \overline x)^2$$
+
+где $ \overline{x} = \frac{1}{n} \sum_{i=1}^n x_i$
+\end{enumerate}
+
+\section{Определение эмпирической плотности и гистограммы}
+
+\hfill 
+
+    \textbf{Эмпирической плотностью} (отвечающей выборке $\vec x$) называют функцию
+
+    \begin{equation*}
+        \hat f_n(x) =
+        \begin{cases}
+            \frac{n_i}{n \Delta}, x \in J_i, i = \overline{1; p} \\
+            0, \text{ иначе} \\
+        \end{cases}
+    \end{equation*}
+
+где $(J_i, n_i)$ -- интервальный статистический ряд
+
+\hfill
+
+Пусть $\vec x$ -- выборка из генеральной совокупности $X$. Если объем $n$ этой выборки велик, то значения $x_i$ группируют не только в статистический ряд, но и в интервальный статистический ряд. Для этого отрезок
+$J = [x_{(1)}, x_{(n)}]$ (где $x_{(1)}=\min\{x_1,..,x_n\}$, $x_{(n)}=\max\{x_1,..,x_n\}$) делят на $p$ равновеликих частей:
+
+\begin{equation*}
+    J_i = [a_i, a_{i+1}), i = \overline{1; p - 1}
+\end{equation*}
+
+\begin{equation*}
+    J_{p} = [a_{p}, a_{p+1}]
+\end{equation*}
+
+$$a_i = x_{(1)} + (i-1)\cdot\Delta, i = \overline{1;p+1}$$
+
+$$\Delta = \frac{|J|}{p} = \frac{x_{(n)} - x_{(1)}}{p}$$
+
+    Интервальным статистическим рядом называют таблицу
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            $J_1$ & ... & $J_i$ & ... & $J_p$ \\
+            \hline
+            $n_1$ & ... & $n_i$ & ... & $n_p$ \\
+            \hline
+        \end{tabular}
+    \end{table}
+
+    Здесь $n_i$ -- количество элементов выборки $\vec x$, которые
+    $\in J_i$
+    
+    \hfill
+    
+    В нашем случае $p=m=[\log_2n] +2$
+    
+    \hfill
+
+\textbf{Гистограммой} называют график эмпирической плотности. 
+
+\section{Определение эмпирической функции распределения}
+
+\hfill 
+
+Пусть $\vec x = (x_1, ..., x_n)$ -- выборка из генеральной совокупности $X$. Обозначим $n(x, \vec x)$ -- чисор элементов вектора $\vec x$, которые имеют значения меньше $x$.
+
+\hfill
+
+\textbf{Эмпирической функцией распределения} называют функцию 
+
+$F_n : \mathbb{R} \to \mathbb{R}$, определенную условием $F_n(x) = \frac{n(x, \vec x)}{n}$. 
+
+\section{Текст программы}
+
+\hfill 
+
+\begin{lstlisting}
+
+\end{lstlisting}
+
+\section{Результаты расчетов для выборки из индивидуального варианта (вариант 22)} 
+
+\begin{enumerate}
+\item Максимальное значение выборки
+\item Минимальное значение выборки
+\item Размах выборки
+\item Выборочное среднее (математическое ожидание)
+\item Состоятельная оценка дисперсии
+\item Группировка значений выборки в $m = [log_2 n] + 2$ интервала
+
+%\includegraphics{values}
+
+\item Гистограмма и график функции плотности распределения вероятностей нормальной случайной величины с математическим ожиданием $\hat \mu$ и дисперсией $S^2$. 
+
+%\includegraphics{graph1}
+
+\newpage
+
+\item График эмпирической функции распределения и функции распределения нормальной случайной величины с математическим ожиданием $\hat \mu$ и дисперсией $S^2$. 
+
+%\includegraphics[scale=0.9]{graph2}
+
+\end{enumerate}
+\end{document}
