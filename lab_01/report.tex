@@ -64,6 +64,88 @@
     numbersep=9pt, % this defines how far the numbers are from the text
     emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
     %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+    literate={Ö}{{\"O}}1
+    {Ä}{{\"A}}1
+    {Ü}{{\"U}}1
+    {ß}{{\ss}}1
+    {ü}{{\"u}}1
+    {ä}{{\"a}}1
+    {ö}{{\"o}}1
+    {~}{{\textasciitilde}}1
+    {а}{{\selectfont\char224}}1
+    {б}{{\selectfont\char225}}1
+    {в}{{\selectfont\char226}}1
+    {г}{{\selectfont\char227}}1
+    {д}{{\selectfont\char228}}1
+    {е}{{\selectfont\char229}}1
+    {ё}{{\"e}}1
+    {ж}{{\selectfont\char230}}1
+    {з}{{\selectfont\char231}}1
+    {и}{{\selectfont\char232}}1
+    {й}{{\selectfont\char233}}1
+    {к}{{\selectfont\char234}}1
+    {л}{{\selectfont\char235}}1
+    {м}{{\selectfont\char236}}1
+    {н}{{\selectfont\char237}}1
+    {о}{{\selectfont\char238}}1
+    {п}{{\selectfont\char239}}1
+    {р}{{\selectfont\char240}}1
+    {с}{{\selectfont\char241}}1
+    {т}{{\selectfont\char242}}1
+    {у}{{\selectfont\char243}}1
+    {ф}{{\selectfont\char244}}1
+    {х}{{\selectfont\char245}}1
+    {ц}{{\selectfont\char246}}1
+    {ч}{{\selectfont\char247}}1
+    {ш}{{\selectfont\char248}}1
+    {щ}{{\selectfont\char249}}1
+    {ъ}{{\selectfont\char250}}1
+    {ы}{{\selectfont\char251}}1
+    {ь}{{\selectfont\char252}}1
+    {э}{{\selectfont\char253}}1
+    {ю}{{\selectfont\char254}}1
+    {я}{{\selectfont\char255}}1
+    {А}{{\selectfont\char192}}1
+    {Б}{{\selectfont\char193}}1
+    {В}{{\selectfont\char194}}1
+    {Г}{{\selectfont\char195}}1
+    {Д}{{\selectfont\char196}}1
+    {Е}{{\selectfont\char197}}1
+    {Ё}{{\"E}}1
+    {Ж}{{\selectfont\char198}}1
+    {З}{{\selectfont\char199}}1
+    {И}{{\selectfont\char200}}1
+    {Й}{{\selectfont\char201}}1
+    {К}{{\selectfont\char202}}1
+    {Л}{{\selectfont\char203}}1
+    {М}{{\selectfont\char204}}1
+    {Н}{{\selectfont\char205}}1
+    {О}{{\selectfont\char206}}1
+    {П}{{\selectfont\char207}}1
+    {Р}{{\selectfont\char208}}1
+    {С}{{\selectfont\char209}}1
+    {Т}{{\selectfont\char210}}1
+    {У}{{\selectfont\char211}}1
+    {Ф}{{\selectfont\char212}}1
+    {Х}{{\selectfont\char213}}1
+    {Ц}{{\selectfont\char214}}1
+    {Ч}{{\selectfont\char215}}1
+    {Ш}{{\selectfont\char216}}1
+    {Щ}{{\selectfont\char217}}1
+    {Ъ}{{\selectfont\char218}}1
+    {Ы}{{\selectfont\char219}}1
+    {Ь}{{\selectfont\char220}}1
+    {Э}{{\selectfont\char221}}1
+    {Ю}{{\selectfont\char222}}1
+    {Я}{{\selectfont\char223}}1
+    {і}{{\selectfont\char105}}1
+    {ї}{{\selectfont\char168}}1
+    {є}{{\selectfont\char185}}1
+    {ґ}{{\selectfont\char160}}1
+    {І}{{\selectfont\char73}}1
+    {Ї}{{\selectfont\char136}}1
+    {Є}{{\selectfont\char153}}1
+    {Ґ}{{\selectfont\char128}}1
 }
 
 %% end code
@@ -205,9 +287,76 @@ $F_n : \mathbb{R} \to \mathbb{R}$, определенную условием $F_
 \section{Текст программы}
 
 \hfill 
-
-\begin{lstlisting}
-
+\begin{lstlisting}[caption=Реализация]
+function main()
+    X=[-5.05,-5.74,-6.39,-5.01,-4.94,-6.32,-4.73,-5.44,-4.79,-5.40,...
+       -4.50,-3.43,-5.21,-5.22,-5.07,-5.51,-4.45,-5.24,-6.50,-4.99,...
+       -5.42,-3.30,-5.06,-5.38,-6.48,-3.31,-5.56,-6.50,-5.22,-5.68,...
+       -4.80,-6.67,-4.95,-5.32,-5.68,-6.32,-3.72,-4.59,-6.33,-5.03,...
+       -4.49,-4.80,-6.04,-6.21,-3.60,-3.93,-5.89,-5.29,-7.41,-3.73,...
+       -6.61,-4.34,-5.99,-5.24,-4.08,-4.68,-5.38,-6.38,-4.66,-3.67,...
+       -4.61,-4.54,-4.51,-5.43,-6.47,-5.31,-4.30,-6.32,-5.82,-3.44,...
+       -5.92,-4.76,-4.45,-3.52,-4.91,-5.65,-5.02,-5.00,-5.26,-4.98,...
+       -6.16,-6.21,-4.42,-6.20,-5.84,-5.58,-5.34,-5.21,-5.78,-7.80,...
+       -5.21,-4.79,-4.53,-4.78,-6.39,-7.04,-4.82,-5.53,-3.52,-6.24,...
+       -3.58,-5.01,-5.79,-4.80,-6.04,-5.15,-7.03,-4.71,-4.38,-5.77,...
+       -4.05,-5.76,-5.86,-6.45,-4.81,-5.68,-7.48,-3.97,-5.16,-3.48];
+    
+    %1)
+    %а) Максимальное и минимальное значения
+    Mmax = max(X);
+    Mmin = min(X);
+    fprintf("\nа) Mmax (максимальное значение) = %f; Mmin (минимальное значенение) = %f", Mmax, Mmin);
+    
+    %б) Размах
+    R = Mmax - Mmin;
+    fprintf("\nб) R (размах) = %f", R);
+    
+    %в) Оценки
+    mu = sum(X) / length(X);
+    s2 = sum((X - mean(X)).^2) / (length(X) - 1);
+    fprintf("\nв)mu (оценка математического ожидания) = %f; s^2 (оценка дисперсии) = %f", mu, s2);
+    
+    %г) Группировка значений выборки
+    % Нахождение количества интервалов
+    m = floor(log2(length(X))) + 2;
+    fprintf("\nг)Группировка значений выборки в m = [log2 n] + 2 интервала: m = %f\n", m);
+    
+    % Разбиение выборки на интервалы от min до max, с помощью BinLimits
+    % объединяем только те значения, которые находятся в интервале от мин
+    % до макс
+    [counts, edges] = histcounts(X, m, 'BinLimits', [min(X), max(X)]);
+    
+    for i = 1: length(counts)
+        fprintf("[%f : %f] - %d\n", edges(i), edges(i + 1), counts(i));
+    end
+    
+    %д) 
+    hist = histogram();
+    hist.BinEdges = edges;
+    hist.BinCounts = counts / length(X) / ((max(X) - min(X)) / m);
+    
+    hold on; % Продолжаем работать с той же системой
+    
+    delta = R/m;
+    sigma = sqrt(s2);
+    Xn = min(X):delta/20:max(X);
+    Y = normpdf(Xn, mu, sigma);
+    plot(Xn, Y, 'blue');
+    
+    %е)
+    figure;
+    [yy, xx] = ecdf(X);
+    stairs(xx, yy);
+    
+    hold on;
+    
+    delta = R/m;
+    Xn = min(X):delta/20:max(X);
+    Y = 1/2 * (1 + erf((Xn - mu) / sqrt(2*s2))); 
+    plot(Xn, Y, 'black');
+    
+end
 \end{lstlisting}
 
 \section{Результаты расчетов для выборки из индивидуального варианта (вариант 22)} 
