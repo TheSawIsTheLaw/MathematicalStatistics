@@ -33,8 +33,8 @@ function main()
     fprintf("\nг)Группировка значений выборки в m = [log2 n] + 2 интервала: m = %f\n", m);
     
     % Разбиение выборки на интервалы от min до max, с помощью BinLimits
-    % объединяем только те значения, которые находятся в интервале от мин
-    % до макс
+    % объединяем только те значения, которые находятся в интервале от
+    % минимума до максимума
     [counts, edges] = histcounts(X, m, 'BinLimits', [min(X), max(X)]);
     
     for i = 1: length(counts)
@@ -48,24 +48,31 @@ function main()
     
     hold on; % Продолжаем работать с той же системой
     
-    % График функции плотности рапределения вероятностей нормальной случайно величины
+    % График функции плотности рапределения вероятностей нормальной случайной величины
     delta = R/m;
     sigma = sqrt(s2);
     Xn = min(X):delta/20:max(X);
     Y = normpdf(Xn, mu, sigma);
     plot(Xn, Y, 'blue');
     
-    % е) График распределения сормальной случайной величины
+    % e)
     figure;
     [yy, xx] = ecdf(X);
     stairs(xx, yy);
     
+%     uniques = unique(X);
+%     count = histcounts(X, uniques);
+%     for i = 2 : (length(count))
+%         count(i) = count(i) + count(i - 1);
+%     end
+%     count = [0 count];
+%     stairs(uniques, count / length(X));
+    
     hold on;
     
-    % График эмпирической функции распределения нормальной случайной величины
     delta = R/m;
     Xn = min(X):delta/20:max(X);
-    Y = 1/2 * (1 + erf((Xn - mu) / sqrt(2*s2))); 
+    Y = normcdf(Xn, mu, s2);
     plot(Xn, Y, 'black');
     
 end
